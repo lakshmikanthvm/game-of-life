@@ -1,0 +1,45 @@
+body,
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  height: 100%;
+}
+
+canvas {
+  max-height: 960px;
+  max-width: 1920px;
+  width: 100%;
+}
+
+.pattern-select-container {
+  position: absolute;
+  bottom: 0;
+  padding: 15px;
+  width: 100%;
+}
+
+label,
+p {
+  color: #fff;
+  padding: 10px;
+}
+
+select {
+  cursor: pointer;
+  width: 200px;
+  padding: 10px 15px;
+}
+
+.action-button {
+  padding: 10px 15px;
+  margin: 10px;
+  width: 100px;
+  cursor: pointer;
+}

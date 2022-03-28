@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="./src/index.css" />
+  </head>
+  <body>
+    <canvas></canvas>
+    <div class="pattern-select-container">
+      <label for="pattern">Select a pattern</label>
+      <select name="pattern" id="pattern">
+        <option value=""></option>
+      </select>
+      <p id="description"></p>
+      <button id="btnStartStop" class="action-button">Start</button>
+    </div>
+  </body>
+  <script type="module">
+    import { next, currentPattern, patternSelected } from './src/engine.js';
+
+    const scale = 4;
+    const worldWidth = 480;
+    const worldHeight = 240;
+    let started = false;
+    let timer;
+    let timeDelay = 100;
+    const cellScale = 20;
+
+    const canvas = document.querySelector("canvas");
+    canvas.width = worldWidth * scale;
+    canvas.height = worldHeight * scale;
+    const ctx = canvas.getContext("2d");
+
+    const render = (world) => {
+      ctx.fillStyle = "#202020";
+      ctx.fillRect(0, 0, worldWidth * scale, worldHeight * scale);
+      ctx.fillStyle = "green";
+      world.forEach((row, y) =>{
+        row.forEach(
+          (alive, x) =>
+            alive && ctx.fillRect(x * cellScale, y * cellScale, cellScale, cellScale)
+        )
+      });
+    };
+
+    const evolve = (pattern) => {
+      if (pattern && pattern.length === 0) {
+        return;
+      }
+      render(pattern);
+      const nextPattern = next(pattern);
+      if (started) {
+        timer = setTimeout(() => evolve(nextPattern), timeDelay);
+      }
+    }
+
+    const startStop = () => {
+      let startStopBtn = document.querySelector('#btnStartStop');
+
+      if (!started) {
+        if (currentPattern && currentPattern.length === 0) {
+          return;
+        }
+        started = true;
+        startStopBtn.innerHTML = 'Stop';
+        evolve(currentPattern);
+      } else {
+        stop();
+      }
+    }
+
+    const stop = () => {
+      let startStopBtn = document.querySelector('#btnStartStop');
+      started = false;
+      startStopBtn.innerHTML = 'Start';
+      clearTimeout(timer);
+    }
+
+    const patternChanged = (event) => {
+      if(started) {
+        stop();
+      }
+      patternSelected(event);
+    }
+    
+    document.getElementById('btnStartStop').addEventListener('click', startStop, false);
+    document.getElementById('pattern').addEventListener('change', patternChanged, false);
+  </script>
+</html>
